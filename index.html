@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Para o amor da minha vida ♡</title>
+  <meta name="description" content="Um lugar só nosso.">
+  <meta name="theme-color" content="#4A1726">
+
+  <!-- ✏️ PREVIEW DO LINK (WhatsApp, Instagram, iMessage...)
+       og:image PRECISA ser uma URL absoluta, ex:
+       https://seuusuario.github.io/nossa-historia/img/capa.jpg -->
+  <meta property="og:title" content="Nossa História ♡">
+  <meta property="og:description" content="Fiz uma coisa para você. Abre com calma.">
+  <meta property="og:image" content="">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💗</text></svg>">
+
+  <!-- Marca que o JS está ativo (usado para esconder o hero antes da animação) -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS (CDN) + paleta personalizada -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream:       '#FBF7F2', // off-white
+            blush:       '#F2DAD3', // rosa pastel
+            rosewood:    '#B5737A', // rosa queimado
+            wine:        '#6E2639', // vinho
+            'wine-deep': '#4A1726', // vinho profundo (fundos escuros)
+            gold:        '#C9A45C', // dourado
+            ink:         '#3B2A2F', // cor do texto
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans:  ['Inter', 'system-ui', 'sans-serif'],
+            lora:  ['Lora', 'Georgia', 'serif'],
+          },
+          keyframes: {
+            'pulse-ring': {
+              '0%':   { transform: 'scale(0.95)', opacity: '0.8' },
+              '100%': { transform: 'scale(1.9)',  opacity: '0' },
+            },
+            'float-y': {
+              '0%, 100%': { transform: 'translateY(-2px)' },
+              '50%':      { transform: 'translateY(4px)' },
+            },
+          },
+          animation: {
+            'pulse-ring': 'pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite',
+            'float-y':    'float-y 2s ease-in-out infinite',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Textura de grão sutil por cima de tudo (toque "papel fotográfico") */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      pointer-events: none;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    html { scroll-behavior: smooth; }
+    ::selection { background: #B5737A; color: #FBF7F2; }
+
+    /* Elementos do hero começam invisíveis e o GSAP revela (só se o JS rodar) */
+    .js [data-hero] { opacity: 0; }
+
+    /* ---------- Card com flip 3D ---------- */
+    .flip-card  { perspective: 1200px; -webkit-tap-highlight-color: transparent; }
+    .flip-inner { transform-style: preserve-3d; transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .flip-face  { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+    .flip-back  { transform: rotateY(180deg); }
+    .flip-card.is-flipped .flip-inner { transform: rotateY(180deg); }
+
+    /* No computador (mouse), vira ao passar o mouse */
+    @media (hover: hover) and (pointer: fine) {
+      .flip-card:hover .flip-inner { transform: rotateY(180deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .flip-inner { transition-duration: 0.01ms; }
+    }
+  </style>
+</head>
+
+<body class="bg-cream font-sans text-ink antialiased">
+
+  <!-- Barra de progresso de leitura (dourada, no topo) -->
+  <div id="scroll-progress" class="fixed left-0 top-0 z-50 h-[2px] w-full origin-left scale-x-0 bg-gradient-to-r from-rosewood via-gold to-rosewood"></div>
+
+  <main class="overflow-x-clip">
+
+    <!-- =====================================================
+         1. HERO — O CONVITE
+         ===================================================== -->
+    <section id="inicio" class="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-wine-deep px-6 text-center text-cream">
+
+      <!-- Fundo -->
+      <div class="absolute inset-0">
+        <!-- ✏️ FOTO DO HERO: coloque o caminho no src, ex: src="img/nos.jpg"
+             Se deixar vazio, aparece só o fundo em degradê. -->
+        <img id="hero-photo" data-photo src="" alt="Nós dois" class="h-full w-full object-cover opacity-40">
+
+        <!-- Brilhos suaves de cor -->
+        <div class="absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-rosewood/40 blur-3xl"></div>
+        <div class="absolute -right-20 bottom-1/4 h-80 w-80 rounded-full bg-gold/20 blur-3xl"></div>
+
+        <!-- Película escura para o texto ficar legível sobre a foto -->
+        <div class="absolute inset-0 bg-gradient-to-b from-wine-deep/70 via-wine/40 to-wine-deep/90"></div>
+      </div>
+
+      <div id="hero-content" class="relative z-10 mx-auto max-w-3xl pb-20">
+        <!-- ✏️ Nome dela -->
+        <p id="hero-label" data-hero class="font-sans text-[0.7rem] uppercase tracking-[0.4em] text-gold sm:text-xs">
+          Para você, Marina Corrêa Pinello, a pessoa mais importante da minha vida.
+        </p>
+
+        <!-- ✏️ FRASE DE IMPACTO (use só texto puro, sem tags — cada palavra é animada) -->
+        <h1 id="hero-title" data-hero class="mt-6 font-serif text-[2.6rem] italic leading-[1.1] sm:text-6xl lg:text-7xl">
+          Existe um antes e um depois de você.
+        </h1>
+
+        <div id="hero-divider" data-hero class="mx-auto mt-8 h-px w-20 bg-gold/70"></div>
+
+        <!-- ✏️ Subtítulo -->
+        <p id="hero-subtitle" data-hero class="mx-auto mt-8 max-w-md font-lora text-base italic leading-relaxed text-cream/80 sm:text-lg">
+          Preparei um lugar só nosso para te contar capítulo por capítulo a nossa história, e o porque de voce ser a mulher que eu quero passar o resto da minha vida.
+        </p>
+
+        <!-- Contador de dias juntos (a data fica no CONFIG, no JavaScript) -->
+        <p id="days-together" data-hero class="mt-10 flex items-baseline justify-center gap-2 font-sans text-[0.7rem] uppercase tracking-[0.3em] text-cream/60">
+          <span>Juntos há</span>
+          <span id="days-count" class="font-serif text-3xl normal-case italic tracking-normal text-gold">0</span>
+          <span>dias</span>
+        </p>
+      </div>
+
+      <!-- Seta pulsante -->
+      <div id="scroll-cta-wrap" class="absolute inset-x-0 bottom-8 z-10 flex justify-center">
+        <button id="scroll-cta" data-hero type="button" aria-label="Começar a nossa história"
+                class="flex flex-col items-center gap-3 text-cream/70 transition-colors duration-300 hover:text-gold focus:outline-none focus-visible:text-gold">
+          <span class="font-sans text-[0.65rem] uppercase tracking-[0.35em]">Comece por aqui</span>
+          <span class="relative flex h-12 w-12 items-center justify-center">
+            <span class="absolute inset-0 animate-pulse-ring rounded-full border border-gold/60"></span>
+            <span class="flex h-12 w-12 items-center justify-center rounded-full border border-cream/30 backdrop-blur-sm">
+              <svg class="h-5 w-5 animate-float-y" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m0 0l-6-6m6 6l6-6"/>
+              </svg>
+            </span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+
+    <!-- =====================================================
+         2. LINHA DO TEMPO — NOSSA HISTÓRIA
+         Para adicionar um capítulo: copie um bloco <li class="chapter"> inteiro.
+         Alterne data-side="left" e data-side="right" para manter o zigue-zague.
+         ===================================================== -->
+    <section id="historia" class="relative bg-cream py-24 sm:py-32">
+
+      <header data-reveal class="mx-auto max-w-2xl px-6 text-center">
+        <p class="font-sans text-xs uppercase tracking-[0.35em] text-rosewood">Capítulo por capítulo</p>
+        <h2 class="mt-4 font-serif text-4xl text-wine sm:text-5xl">Nossa história</h2>
+        <div class="mt-6 flex items-center justify-center gap-3 text-gold">
+          <span class="h-px w-12 bg-gold/60"></span><span class="text-sm">♡</span><span class="h-px w-12 bg-gold/60"></span>
+        </div>
+      </header>
+
+      <div id="timeline" class="relative mx-auto mt-20 max-w-5xl px-6">
+        <!-- Linha vertical (trilho claro + preenchimento dourado que acompanha o scroll) -->
+        <div class="absolute bottom-0 left-6 top-0 w-px bg-gold/20 md:left-1/2"></div>
+        <div id="timeline-progress" class="absolute bottom-0 left-6 top-0 w-px origin-top bg-gold md:left-1/2"></div>
+
+        <ol class="space-y-24 md:space-y-36">
+
+          <!-- ───────── CAPÍTULO 1 ───────── -->
+          <li class="chapter relative grid gap-10 pl-10 md:grid-cols-2 md:items-center md:gap-20 md:pl-0" data-side="left">
+            <span class="absolute left-0 top-3 -translate-x-1/2 md:left-1/2 md:top-1/2 md:-translate-y-1/2">
+              <span class="chapter-dot block h-3 w-3 rounded-full bg-gold ring-4 ring-cream"></span>
+            </span>
+
+            <div class="relative">
+              <div class="chapter-deco absolute -inset-3 -rotate-2 rounded-[2.4rem] border border-gold/40"></div>
+              <div class="chapter-deco absolute inset-0 rounded-[2rem] shadow-[0_30px_60px_-25px_rgba(110,38,57,0.45)]"></div>
+              <figure class="chapter-photo relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blush to-[#EBC6BE] text-rosewood">
+                  <svg class="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+                  <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em]"></span>
+                </div>
+                <!-- ✏️ FOTO DO CAPÍTULO 1: ex: src="img/capitulo-1.jpg" -->
+                <img data-photo src="assets/cantadada.jpeg" alt="Capítulo 1" loading="lazy" class="absolute left-0 top-[-10%] h-[120%] w-full object-cover">
+              </figure>
+            </div>
+
+            <div class="chapter-text">
+              <p class="font-sans text-xs uppercase tracking-[0.35em] text-gold">Capítulo I</p>
+              <!-- ✏️ Data -->
+              <time class="mt-3 block font-serif text-lg italic text-rosewood">29 de outubro de 2023</time>
+              <!-- ✏️ Título do capítulo -->
+              <h3 class="mt-2 font-serif text-3xl leading-tight text-wine sm:text-4xl">O dia da melhor escolha da minha vida</h3>
+              <!-- ✏️ Texto do capítulo -->
+              <p class="mt-5 font-lora text-base leading-relaxed text-ink/80 sm:text-lg">
+                Eu não fazia ideia, mas aquele dia comum ia virar uma das datas mais importantes do meu calendário. Já estava de olho em você a um bom tempo,
+                 mas quando eu vi a foto que a mulher mais linda que eu ja vi tinha postado, não consegui ficar quieto tinha que dizer algo tinha que conquistar
+                 essa menina de algum jeito, e assim me deu coragem e enviei uma mensagem com uma cantada simples da garota de ipanema kkakaak, qeu a gente lembra
+                 até hoje e damos risada juntos, mas eu mal sabia que esse dia me marcaria pra sempre.
+              </p>
+            </div>
+          </li>
+
+          <!-- ───────── CAPÍTULO 2 ───────── -->
+          <li class="chapter relative grid gap-10 pl-10 md:grid-cols-2 md:items-center md:gap-20 md:pl-0" data-side="right">
+            <span class="absolute left-0 top-3 -translate-x-1/2 md:left-1/2 md:top-1/2 md:-translate-y-1/2">
+              <span class="chapter-dot block h-3 w-3 rounded-full bg-gold ring-4 ring-cream"></span>
+            </span>
+
+            <div class="relative md:order-2">
+              <div class="chapter-deco absolute -inset-3 rotate-2 rounded-[2.4rem] border border-gold/40"></div>
+              <div class="chapter-deco absolute inset-0 rounded-[2rem] shadow-[0_30px_60px_-25px_rgba(110,38,57,0.45)]"></div>
+              <figure class="chapter-photo relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blush to-[#EBC6BE] text-rosewood">
+                  <svg class="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+                  <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em]"></span>
+                </div>
+                <!-- ✏️ FOTO DO CAPÍTULO 2: ex: src="img/capitulo-2.jpg" -->
+                <img data-photo src="assets/primeiro encontro.jpeg" alt="Capítulo 2" loading="lazy" class="absolute left-0 top-[-10%] h-[120%] w-full object-cover">
+              </figure>
+            </div>
+
+            <div class="chapter-text md:order-1 md:text-right">
+              <p class="font-sans text-xs uppercase tracking-[0.35em] text-gold">Capítulo II</p>
+              <!-- ✏️ Data -->
+              <time class="mt-3 block font-serif text-lg italic text-rosewood">10 de novembro de 2023</time>
+              <!-- ✏️ Título -->
+              <h3 class="mt-2 font-serif text-3xl leading-tight text-wine sm:text-4xl">O primeiro encontro</h3>
+              <!-- ✏️ Texto -->
+              <p class="mt-5 font-lora text-base leading-relaxed text-ink/80 sm:text-lg">
+                Acho que a gente não tem foto desse dia, então eu coloquei essa porque eu gosto muito dela.
+                Mas enfim, ensaiei cada frase no caminho e não usei nenhuma. Com você, a conversa simplesmente aconteceu como se a gente já se conhecesse há anos.
+                Mesmo a gente ja tendo conversado bastante pelo o whatsapp, eu estava muito nervoso, na verdade sempre que eu ia te ver na escola, saia escondido 
+                pra te encontrar e falar com voce ja me dava uma ansiedade absurda mas neste dia meu coração estava quase saindo pela boca, mas deu tudo certo foi
+              a primeira vez que eu te beijei e sinceramente foi um dos dias mais especiais da minha vida e não sabia o que ainda estava por vir, e que minha vida ia mudar tanto ao seu lado.            </p>
+            </div>
+          </li>
+
+          <!-- ───────── CAPÍTULO 3 ───────── -->
+          <li class="chapter relative grid gap-10 pl-10 md:grid-cols-2 md:items-center md:gap-20 md:pl-0" data-side="left">
+            <span class="absolute left-0 top-3 -translate-x-1/2 md:left-1/2 md:top-1/2 md:-translate-y-1/2">
+              <span class="chapter-dot block h-3 w-3 rounded-full bg-gold ring-4 ring-cream"></span>
+            </span>
+
+            <div class="relative">
+              <div class="chapter-deco absolute -inset-3 -rotate-2 rounded-[2.4rem] border border-gold/40"></div>
+              <div class="chapter-deco absolute inset-0 rounded-[2rem] shadow-[0_30px_60px_-25px_rgba(110,38,57,0.45)]"></div>
+              <figure class="chapter-photo relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blush to-[#EBC6BE] text-rosewood">
+                  <svg class="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+                  <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em]"></span>
+                </div>
+                <!-- ✏️ FOTO DO CAPÍTULO 3: ex: src="img/capitulo-3.jpg" -->
+                <img data-photo src="assets/pedido.jpeg" alt="Capítulo 3" loading="lazy" class="absolute left-0 top-[-10%] h-[120%] w-full object-cover">
+              </figure>
+            </div>
+
+            <div class="chapter-text">
+              <p class="font-sans text-xs uppercase tracking-[0.35em] text-gold">Capítulo III</p>
+              <!-- ✏️ Data -->
+              <time class="mt-3 block font-serif text-lg italic text-rosewood">02 de fevereiro de 2024</time>
+              <!-- ✏️ Título -->
+              <h3 class="mt-2 font-serif text-3xl leading-tight text-wine sm:text-4xl">O pedido</h3>
+              <!-- ✏️ Texto -->
+              <p class="mt-5 font-lora text-base leading-relaxed text-ink/80 sm:text-lg">
+                Minhas mãos tremiam, mas a certeza não. Você chegou, sorriu, e eu esqueci tudo o que ia dizer.
+                Mas mesmo com toda a tensão e nervosismo do momento, eu olhei pra você vi seu rostinho perfeito, e pensei "É ela. É com ela que eu quero passar o resto da minha vida."
+                Então foi ai que entrei peguei sua aliança, suas flores, a almofada do eu te amo kakaka, e consegui soltar as palavras que estavam presas em minha boca "Quer namorar comigo ?". Quando você disse sim, eu entendi que estava começando a parte mais bonita da minha vida.
+              </p>
+            </div>
+          </li>
+
+          <!-- ───────── CAPÍTULO 4 ───────── -->
+          <li class="chapter relative grid gap-10 pl-10 md:grid-cols-2 md:items-center md:gap-20 md:pl-0" data-side="right">
+            <span class="absolute left-0 top-3 -translate-x-1/2 md:left-1/2 md:top-1/2 md:-translate-y-1/2">
+              <span class="chapter-dot block h-3 w-3 rounded-full bg-gold ring-4 ring-cream"></span>
+            </span>
+
+            <div class="relative md:order-2">
+              <div class="chapter-deco absolute -inset-3 rotate-2 rounded-[2.4rem] border border-gold/40"></div>
+              <div class="chapter-deco absolute inset-0 rounded-[2rem] shadow-[0_30px_60px_-25px_rgba(110,38,57,0.45)]"></div>
+              <figure class="chapter-photo relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blush to-[#EBC6BE] text-rosewood">
+                  <svg class="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+                  <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em]"></span>
+                </div>
+                <!-- ✏️ FOTO DO CAPÍTULO 4: ex: src="img/capitulo-4.jpg" -->
+                <img data-photo src="" alt="Capítulo 4" loading="lazy" class="absolute left-0 top-[-10%] h-[120%] w-full object-cover">
+              </figure>
+            </div>
+
+            <div class="chapter-text md:order-1 md:text-right">
+              <p class="font-sans text-xs uppercase tracking-[0.35em] text-gold">Capítulo IV</p>
+              <!-- ✏️ Data -->
+              <time class="mt-3 block font-serif text-lg italic text-rosewood">Hoje</time>
+              <!-- ✏️ Título -->
+              <h3 class="mt-2 font-serif text-3xl leading-tight text-wine sm:text-4xl">E aqui estamos</h3>
+              <!-- ✏️ Texto -->
+              <p class="mt-5 font-lora text-base leading-relaxed text-ink/80 sm:text-lg">
+                Cada dia ao seu lado é um capítulo novo, e eu quero ler todos com você bem devagar, sem pular nenhuma página
+                para poder aproveitar cada detalhe do que a gente ainda tem pra viver juntos, até o dia do nosso casamento,
+                até o primeiro papai e mamãe das criaturinhas mais lindas que vão nascer, até nós envelhecermos juntos e 
+                continuarmos nos amando até a vida eterna. Você é a pessoa mais especial que eu conheci, mais gentil,
+                carinhosa, atenciosa, comprometida, responsável, determinada, honesta, simpática e claro a mulher mais linda
+                que ja vi na minha vida. Enfim, depois disso tudo o que eu tenho pra te dizer é que eu te amo muito e que eu quero passar o resto da minha vida com você, quero te fazer feliz todos os dias da minha vida.
+              </p>
+            </div>
+          </li>
+
+        </ol>
+      </div>
+    </section>
+
+
+    <!-- =====================================================
+         3. POR QUE EU TE AMO — CARDS COM FLIP 3D
+         Para adicionar um card: copie um bloco "CARD" inteiro e mude o número.
+         ===================================================== -->
+    <section id="motivos" class="relative bg-gradient-to-b from-cream via-blush/40 to-cream py-24 sm:py-32">
+
+      <header data-reveal class="mx-auto max-w-2xl px-6 text-center">
+        <p class="font-sans text-xs uppercase tracking-[0.35em] text-rosewood">Uma lista que nunca acaba</p>
+        <h2 class="mt-4 font-serif text-4xl text-wine sm:text-5xl">Por que eu te amo</h2>
+        <div class="mt-6 flex items-center justify-center gap-3 text-gold">
+          <span class="h-px w-12 bg-gold/60"></span><span class="text-sm">♡</span><span class="h-px w-12 bg-gold/60"></span>
+        </div>
+        <p class="mx-auto mt-6 max-w-sm font-lora text-base italic text-ink/70">
+          Toque em cada cartão para descobrir um pedacinho do que eu sinto.
+        </p>
+      </header>
+
+      <div class="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-6 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+
+        <!-- ───────── CARD 1 ───────── -->
+        <div class="reason-card flip-card h-72 cursor-pointer rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:h-80" role="button" tabindex="0" aria-pressed="false">
+          <div class="flip-inner relative h-full w-full">
+            <div class="flip-face absolute inset-0 flex flex-col justify-between rounded-3xl border border-gold/30 bg-cream p-7 shadow-[0_20px_50px_-25px_rgba(110,38,57,0.35)]">
+              <div class="flex items-start justify-between">
+                <span class="font-serif text-5xl italic text-gold/80">01</span>
+                <span class="text-lg text-rosewood/50">♡</span>
+              </div>
+              <div>
+                <!-- ✏️ Título (frente) -->
+                <h3 class="font-serif text-2xl text-wine">Seu sorriso</h3>
+                <p class="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-rosewood">Vire o cartão</p>
+              </div>
+            </div>
+            <div class="flip-face flip-back absolute inset-0 flex flex-col justify-center rounded-3xl bg-wine p-7 text-cream shadow-[0_20px_50px_-25px_rgba(110,38,57,0.6)]">
+              <!-- ✏️ Categoria (verso) -->
+              <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold">Detalhe que eu admiro</span>
+              <!-- ✏️ Texto (verso) -->
+              <p class="mt-4 font-lora text-lg italic leading-relaxed">
+                Quando você ri de verdade, com os olhos fechando, o mundo inteiro fica mais leve, e eu só penso no tamanho da sorte que é ter você comigo.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────── CARD 2 ───────── -->
+        <div class="reason-card flip-card h-72 cursor-pointer rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:h-80" role="button" tabindex="0" aria-pressed="false">
+          <div class="flip-inner relative h-full w-full">
+            <div class="flip-face absolute inset-0 flex flex-col justify-between rounded-3xl border border-gold/30 bg-cream p-7 shadow-[0_20px_50px_-25px_rgba(110,38,57,0.35)]">
+              <div class="flex items-start justify-between">
+                <span class="font-serif text-5xl italic text-gold/80">02</span>
+                <span class="text-lg text-rosewood/50">♡</span>
+              </div>
+              <div>
+                <!-- ✏️ -->
+                <h3 class="font-serif text-2xl text-wine">Aquela frase</h3>
+                <p class="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-rosewood">Vire o cartão</p>
+              </div>
+            </div>
+            <div class="flip-face flip-back absolute inset-0 flex flex-col justify-center rounded-3xl bg-wine p-7 text-cream shadow-[0_20px_50px_-25px_rgba(110,38,57,0.6)]">
+              <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold">frase do amor</span>
+              <!-- ✏️ Coloque aqui uma piada que só vocês entendem -->
+              <p class="mt-4 font-lora text-lg italic leading-relaxed">
+                Até hoje eu não consigo ouvir “Garota de Ipanema" sem rir sozinho lembrando de você e de onde tudo começou.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────── CARD 3 ───────── -->
+        <div class="reason-card flip-card h-72 cursor-pointer rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:h-80" role="button" tabindex="0" aria-pressed="false">
+          <div class="flip-inner relative h-full w-full">
+            <div class="flip-face absolute inset-0 flex flex-col justify-between rounded-3xl border border-gold/30 bg-cream p-7 shadow-[0_20px_50px_-25px_rgba(110,38,57,0.35)]">
+              <div class="flex items-start justify-between">
+                <span class="font-serif text-5xl italic text-gold/80">03</span>
+                <span class="text-lg text-rosewood/50">♡</span>
+              </div>
+              <div>
+                <!-- ✏️ -->
+                <h3 class="font-serif text-2xl text-wine">Aquela noite</h3>
+                <p class="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-rosewood">Vire o cartão</p>
+              </div>
+            </div>
+            <div class="flip-face flip-back absolute inset-0 flex flex-col justify-center rounded-3xl bg-wine p-7 text-cream shadow-[0_20px_50px_-25px_rgba(110,38,57,0.6)]">
+              <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold">Uma memória</span>
+              <!-- ✏️ -->
+              <p class="mt-4 font-lora text-lg italic leading-relaxed">
+                Eu ainda lembro exatamente do que você vestia naquela noite na primeira vez que a gente saiu. E de como eu não conseguia parar de te olhar. Aquele shortinho bege e aquela blusinha preta, voce estava realmente muito linda.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────── CARD 4 ───────── -->
+        <div class="reason-card flip-card h-72 cursor-pointer rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:h-80" role="button" tabindex="0" aria-pressed="false">
+          <div class="flip-inner relative h-full w-full">
+            <div class="flip-face absolute inset-0 flex flex-col justify-between rounded-3xl border border-gold/30 bg-cream p-7 shadow-[0_20px_50px_-25px_rgba(110,38,57,0.35)]">
+              <div class="flex items-start justify-between">
+                <span class="font-serif text-5xl italic text-gold/80">04</span>
+                <span class="text-lg text-rosewood/50">♡</span>
+              </div>
+              <div>
+                <!-- ✏️ -->
+                <h3 class="font-serif text-2xl text-wine">Sua coragem</h3>
+                <p class="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-rosewood">Vire o cartão</p>
+              </div>
+            </div>
+            <div class="flip-face flip-back absolute inset-0 flex flex-col justify-center rounded-3xl bg-wine p-7 text-cream shadow-[0_20px_50px_-25px_rgba(110,38,57,0.6)]">
+              <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold">Detalhe que eu admiro</span>
+              <!-- ✏️ -->
+              <p class="mt-4 font-lora text-lg italic leading-relaxed">
+                Você enfrenta o que tem medo, mesmo com medo.Você é uma mulher muito forte meu amor e eu admiro muito isso em você. Eu aprendo com você todos os dias.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────── CARD 5 ───────── -->
+        <div class="reason-card flip-card h-72 cursor-pointer rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:h-80" role="button" tabindex="0" aria-pressed="false">
+          <div class="flip-inner relative h-full w-full">
+            <div class="flip-face absolute inset-0 flex flex-col justify-between rounded-3xl border border-gold/30 bg-cream p-7 shadow-[0_20px_50px_-25px_rgba(110,38,57,0.35)]">
+              <div class="flex items-start justify-between">
+                <span class="font-serif text-5xl italic text-gold/80">05</span>
+                <span class="text-lg text-rosewood/50">♡</span>
+              </div>
+              <div>
+                <!-- ✏️ -->
+                <h3 class="font-serif text-2xl text-wine">Nosso idioma</h3>
+                <p class="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-rosewood">Vire o cartão</p>
+              </div>
+            </div>
+            <div class="flip-face flip-back absolute inset-0 flex flex-col justify-center rounded-3xl bg-wine p-7 text-cream shadow-[0_20px_50px_-25px_rgba(110,38,57,0.6)]">
+              <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold">Piada interna</span>
+              <!-- ✏️ -->
+              <p class="mt-4 font-lora text-lg italic leading-relaxed">
+                A gente tem um idioma próprio de apelidos e caretas que ninguém mais entende e eu amo cada detalhe disso.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────── CARD 6 ───────── -->
+        <div class="reason-card flip-card h-72 cursor-pointer rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:h-80" role="button" tabindex="0" aria-pressed="false">
+          <div class="flip-inner relative h-full w-full">
+            <div class="flip-face absolute inset-0 flex flex-col justify-between rounded-3xl border border-gold/30 bg-cream p-7 shadow-[0_20px_50px_-25px_rgba(110,38,57,0.35)]">
+              <div class="flex items-start justify-between">
+                <span class="font-serif text-5xl italic text-gold/80">06</span>
+                <span class="text-lg text-rosewood/50">♡</span>
+              </div>
+              <div>
+                <!-- ✏️ -->
+                <h3 class="font-serif text-2xl text-wine">Seu jeito de cuidar</h3>
+                <p class="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-rosewood">Vire o cartão</p>
+              </div>
+            </div>
+            <div class="flip-face flip-back absolute inset-0 flex flex-col justify-center rounded-3xl bg-wine p-7 text-cream shadow-[0_20px_50px_-25px_rgba(110,38,57,0.6)]">
+              <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold">Detalhe que eu admiro</span>
+              <!-- ✏️ -->
+              <p class="mt-4 font-lora text-lg italic leading-relaxed">
+                Você lembra das pequenas coisas que eu mesmo esqueço, você sempre se esforça para dar todo seu carinho, você é gentil sempre e isso é uma das coisa que eu mais admiro em você. É assim que eu sei que sou amado.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =====================================================
+         4. O FINAL — CALL TO ACTION EMOCIONAL
+         ===================================================== -->
+    <section id="final" class="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-wine-deep px-6 py-24 text-center text-cream">
+      <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(181,115,122,0.35),transparent_65%)]"></div>
+
+      <div class="relative z-10 mx-auto max-w-2xl">
+        <p data-line class="font-sans text-xs uppercase tracking-[0.4em] text-gold">Último capítulo — por enquanto</p>
+
+        <!-- ✏️ Título final -->
+        <h2 data-line class="mt-6 font-serif text-4xl italic leading-tight sm:text-6xl">Para sempre começa aqui.</h2>
+
+        <!-- ✏️ TEXTO DE ENCERRAMENTO (cada <p> aparece em sequência) -->
+        <div class="mt-10 space-y-6 font-lora text-lg italic leading-relaxed text-cream/85 sm:text-xl">
+          <p data-line>Se eu pudesse voltar no tempo, faria tudo de novo, cada escolha, cada caminho, só para ter certeza de que ia te encontrar.</p>
+          <p data-line>Você é meu lugar favorito, minha pessoa preferida e a melhor parte de todos os meus dias.</p>
+          <p data-line>Obrigado por escrever essa história comigo.</p>
+        </div>
+
+        <div class="mt-14 min-h-[12rem]">
+          <!-- Botão da surpresa -->
+          <button id="surprise-btn" data-line type="button"
+                  class="relative inline-flex items-center gap-3 rounded-full bg-gold px-7 py-4 font-sans text-xs font-medium uppercase tracking-[0.18em] text-wine-deep shadow-[0_0_40px_-5px_rgba(201,164,92,0.6)] transition duration-300 hover:scale-[1.03] hover:shadow-[0_0_60px_-5px_rgba(201,164,92,0.85)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cream active:scale-95 sm:text-sm">
+            <span class="absolute inset-0 animate-pulse-ring rounded-full border border-gold"></span>
+            <!-- ✏️ Texto do botão -->
+            <span>Clique para uma última surpresa</span>
+            <span aria-hidden="true">♡</span>
+          </button>
+
+          <!-- MENSAGEM OCULTA (aparece depois do clique) -->
+          <div id="secret" class="hidden" aria-live="polite">
+            <!-- ✏️ -->
+            <p class="font-serif text-6xl italic text-gold sm:text-8xl">Eu te amo.</p>
+            <!-- ✏️ -->
+            <p class="mx-auto mt-6 max-w-md font-lora text-lg italic leading-relaxed text-cream/90 sm:text-xl">
+              Hoje, amanhã e em todos os capítulos que ainda vamos escrever juntos.
+            </p>
+            <!-- ✏️ Sua assinatura -->
+            <p class="mt-8 font-sans text-xs uppercase tracking-[0.35em] text-cream/60">Com todo o meu amor, João Victor Scaboli</p>
+            <button id="again-btn" type="button" class="mt-10 font-sans text-[0.7rem] uppercase tracking-[0.3em] text-gold/80 underline decoration-gold/40 underline-offset-8 transition hover:text-gold">
+              Soltar mais corações ♡
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ✏️ Rodapé -->
+  <footer class="bg-wine-deep pb-10 text-center font-sans text-[0.65rem] uppercase tracking-[0.3em] text-cream/40">
+    Feito com amor por João Victor Scaboli · 2026
+  </footer>
+
+
+  <!-- Bibliotecas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script>
+    /* =========================================================
+       ✏️ CONFIGURAÇÕES — edite aqui
+       ========================================================= */
+    const CONFIG = {
+      // Data em que vocês começaram (formato AAAA-MM-DD).
+      // Deixe '' (vazio) para esconder o contador de dias.
+      dataInicio: '2024-02-02',
+
+      // Cores dos corações do confete
+      coresConfete: ['#B5737A', '#F2DAD3', '#C9A45C', '#6E2639', '#FBF7F2'],
+
+      // Quanto tempo dura a chuva de corações (em milissegundos)
+      duracaoConfete: 3500,
+    };
+
+
+    /* =========================================================
+       Ambiente: respeita quem prefere menos movimento e
+       garante que o site funciona mesmo se o GSAP não carregar.
+       ========================================================= */
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasGSAP = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+    const shouldAnimate = hasGSAP && !prefersReducedMotion;
+
+
+    /* ---------------------------------------------------------
+       1. FOTOS
+       Esconde <img> sem src (ou que deram erro), deixando o
+       placeholder "Sua foto aqui" visível por baixo.
+       --------------------------------------------------------- */
+    function initPhotos() {
+      document.querySelectorAll('img[data-photo]').forEach((img) => {
+        const hide = () => { img.style.display = 'none'; };
+        if (!img.getAttribute('src')) return hide();
+        img.addEventListener('error', hide);
+        if (img.complete && img.naturalWidth === 0) hide();
+      });
+    }
+
+
+    /* ---------------------------------------------------------
+       2. CONTADOR DE DIAS JUNTOS
+       Retorna uma função que anima o número (chamada no hero).
+       --------------------------------------------------------- */
+    function getDaysTogether() {
+      if (!CONFIG.dataInicio) return null;
+      const start = new Date(`${CONFIG.dataInicio}T00:00:00`);
+      const diff = Date.now() - start.getTime();
+      if (Number.isNaN(diff) || diff < 0) return null;
+      return Math.floor(diff / 86400000);
+    }
+
+    function initCounter() {
+      const wrap = document.getElementById('days-together');
+      const el = document.getElementById('days-count');
+      const days = getDaysTogether();
+
+      if (days === null) { wrap.remove(); return null; }
+
+      if (!shouldAnimate) {
+        el.textContent = days.toLocaleString('pt-BR');
+        return null;
+      }
+
+      return () => {
+        const counter = { value: 0 };
+        gsap.to(counter, {
+          value: days,
+          duration: 2.4,
+          ease: 'power2.out',
+          onUpdate: () => { el.textContent = Math.round(counter.value).toLocaleString('pt-BR'); },
+        });
+      };
+    }
+
+
+    /* ---------------------------------------------------------
+       3. HERO — fade-in lento, palavra por palavra
+       --------------------------------------------------------- */
+    function splitWords(el) {
+      const words = el.textContent.trim().split(/\s+/);
+      el.innerHTML = words.map((w) => `<span class="inline-block">${w}</span>`).join(' ');
+      return el.querySelectorAll('span');
+    }
+
+    function animateHero(countUp) {
+      const title = document.getElementById('hero-title');
+      const words = splitWords(title);
+      const hasCounter = !!document.getElementById('days-together');
+
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      tl.fromTo('#hero-photo', { scale: 1.15 }, { scale: 1, duration: 7, ease: 'power2.out' }, 0)
+        .fromTo('#hero-label', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 1.6 }, 0.4)
+        .set(title, { opacity: 1 }, 0.9)
+        .fromTo(words,
+          { opacity: 0, y: 28, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.8, stagger: 0.14 }, 0.9)
+        .fromTo('#hero-divider', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 1.4 }, '-=0.8')
+        .fromTo('#hero-subtitle', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.6 }, '-=1');
+
+      if (hasCounter) {
+        tl.fromTo('#days-together', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 1.2 }, '-=0.8');
+        if (countUp) tl.call(countUp, null, '<');
+      }
+
+      tl.fromTo('#scroll-cta', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 1.2 }, '-=0.4');
+
+      // Parallax ao rolar: o conteúdo sobe e some, a foto desce devagar
+      gsap.to('#hero-content', {
+        yPercent: -12, opacity: 0, ease: 'none',
+        scrollTrigger: { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true },
+      });
+      gsap.to('#hero-photo', {
+        yPercent: 12, ease: 'none',
+        scrollTrigger: { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true },
+      });
+      gsap.to('#scroll-cta-wrap', {
+        opacity: 0, ease: 'none',
+        scrollTrigger: { trigger: '#inicio', start: 'top top', end: '25% top', scrub: true },
+      });
+    }
+
+
+    /* ---------------------------------------------------------
+       4. BARRA DE PROGRESSO DE LEITURA
+       --------------------------------------------------------- */
+    function animateScrollProgress() {
+      gsap.to('#scroll-progress', {
+        scaleX: 1, ease: 'none',
+        scrollTrigger: { start: 0, end: 'max', scrub: 0.3 },
+      });
+    }
+
+
+    /* ---------------------------------------------------------
+       5. REVELAÇÃO GENÉRICA (títulos de seção com data-reveal)
+       --------------------------------------------------------- */
+    function animateReveals() {
+      gsap.utils.toArray('[data-reveal]').forEach((el) => {
+        gsap.from(el, {
+          opacity: 0, y: 40, duration: 1.2, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        });
+      });
+    }
+
+
+    /* ---------------------------------------------------------
+       6. LINHA DO TEMPO
+       - A linha dourada "se desenha" conforme o scroll
+       - Cada foto é revelada lateralmente (clip-path)
+       - A foto tem parallax suave enquanto rola
+       --------------------------------------------------------- */
+    function animateTimeline() {
+      gsap.fromTo('#timeline-progress', { scaleY: 0 }, {
+        scaleY: 1, ease: 'none',
+        scrollTrigger: { trigger: '#timeline', start: 'top 70%', end: 'bottom 70%', scrub: true },
+      });
+
+      gsap.utils.toArray('.chapter').forEach((chapter) => {
+        const fromRight = chapter.dataset.side === 'right';
+        const photo = chapter.querySelector('.chapter-photo');
+        const img = photo.querySelector('img');
+        const deco = chapter.querySelectorAll('.chapter-deco');
+        const dot = chapter.querySelector('.chapter-dot');
+        const textParts = chapter.querySelector('.chapter-text').children;
+
+        const hiddenClip = fromRight
+          ? 'inset(0% 0% 0% 100% round 2rem)'
+          : 'inset(0% 100% 0% 0% round 2rem)';
+
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: chapter, start: 'top 75%', once: true },
+        });
+
+        tl.fromTo(dot, { scale: 0 }, { scale: 1, duration: 0.6, ease: 'back.out(3)' }, 0)
+          .fromTo(photo,
+            { clipPath: hiddenClip },
+            { clipPath: 'inset(0% 0% 0% 0% round 2rem)', duration: 1.6, ease: 'expo.out' }, 0)
+          .fromTo(img, { scale: 1.3 }, { scale: 1, duration: 2, ease: 'expo.out' }, 0)
+          .fromTo(deco, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 0.5)
+          .fromTo(textParts,
+            { opacity: 0, x: fromRight ? -40 : 40 },
+            { opacity: 1, x: 0, duration: 1.2, stagger: 0.12, ease: 'power3.out' }, 0.3);
+
+        // Parallax da foto dentro da moldura
+        gsap.fromTo(img, { yPercent: -8 }, {
+          yPercent: 8, ease: 'none',
+          scrollTrigger: { trigger: photo, start: 'top bottom', end: 'bottom top', scrub: true },
+        });
+      });
+    }
+
+
+    /* ---------------------------------------------------------
+       7. CARDS "POR QUE EU TE AMO"
+       - Entram em cascata quando aparecem na tela
+       - No celular: toque vira / desvira
+       - No computador: vira com o mouse (CSS) ou Enter/Espaço
+       --------------------------------------------------------- */
+    function initFlipCards() {
+      const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+      document.querySelectorAll('.flip-card').forEach((card) => {
+        const toggle = () => {
+          const flipped = card.classList.toggle('is-flipped');
+          card.setAttribute('aria-pressed', String(flipped));
+          if (navigator.vibrate) navigator.vibrate(8); // vibração leve no Android
+        };
+
+        card.addEventListener('click', () => { if (!canHover) toggle(); });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+        });
+      });
+    }
+
+    function animateReasons() {
+      gsap.set('.reason-card', { opacity: 0, y: 50 });
+      ScrollTrigger.batch('.reason-card', {
+        start: 'top 88%',
+        once: true,
+        onEnter: (batch) => gsap.to(batch, {
+          opacity: 1, y: 0, duration: 1, stagger: 0.12, ease: 'power3.out', clearProps: 'transform',
+        }),
+      });
+    }
+
+
+    /* ---------------------------------------------------------
+       8. FINAL — texto em sequência + surpresa com corações
+       --------------------------------------------------------- */
+    function animateFinal() {
+      gsap.fromTo('#final [data-line]', { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 1.4, stagger: 0.35, ease: 'power3.out', clearProps: 'transform',
+        scrollTrigger: { trigger: '#final', start: 'top 60%', once: true },
+      });
+    }
+
+    // Formato de coração (path SVG) para o canvas-confetti
+    const HEART_PATH = 'M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,76 -76,151 -151,227 -76,-76 -151,-151 -151,-227 0,-42 33,-75 76,-75 38,0 57,18 75,56z';
+    let heartShape = null;
+
+    function heartRain() {
+      if (typeof confetti !== 'function') return;
+      if (!heartShape) heartShape = confetti.shapeFromPath({ path: HEART_PATH });
+
+      const base = { shapes: [heartShape], colors: CONFIG.coresConfete, scalar: 2, ticks: 260 };
+
+      // Explosão central
+      confetti({
+        ...base,
+        particleCount: prefersReducedMotion ? 40 : 140,
+        spread: 120, startVelocity: 45, origin: { y: 0.6 },
+      });
+
+      if (prefersReducedMotion) return;
+
+      // Chuva contínua: laterais + caindo do topo, cobrindo a tela inteira
+      const end = Date.now() + CONFIG.duracaoConfete;
+      (function frame() {
+        confetti({ ...base, particleCount: 2, angle: 60,  spread: 55, origin: { x: 0, y: 0.8 } });
+        confetti({ ...base, particleCount: 2, angle: 120, spread: 55, origin: { x: 1, y: 0.8 } });
+        confetti({
+          ...base, particleCount: 1, angle: 270, spread: 40, startVelocity: 8,
+          gravity: 0.5, drift: (Math.random() - 0.5) * 1.5, scalar: 1.6,
+          origin: { x: Math.random(), y: -0.05 },
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
+    function initSurprise() {
+      const btn = document.getElementById('surprise-btn');
+      const secret = document.getElementById('secret');
+      const again = document.getElementById('again-btn');
+
+      const revealSecret = () => {
+        btn.style.display = 'none';
+        secret.classList.remove('hidden');
+        if (shouldAnimate) {
+          gsap.fromTo(secret.children,
+            { opacity: 0, y: 30, filter: 'blur(8px)' },
+            { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.4, stagger: 0.3, ease: 'power3.out' });
+        }
+      };
+
+      btn.addEventListener('click', () => {
+        heartRain();
+        if (shouldAnimate) {
+          gsap.to(btn, { opacity: 0, scale: 0.9, duration: 0.5, ease: 'power2.in', onComplete: revealSecret });
+        } else {
+          revealSecret();
+        }
+      }, { once: true });
+
+      again.addEventListener('click', heartRain);
+    }
+
+
+    /* =========================================================
+       INICIALIZAÇÃO
+       ========================================================= */
+    function init() {
+      initPhotos();
+      initFlipCards();
+      initSurprise();
+      const countUp = initCounter();
+
+      document.getElementById('scroll-cta').addEventListener('click', () => {
+        document.getElementById('historia').scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      });
+
+      // Sem GSAP (ou com "reduzir movimento" ativo): mostra tudo sem animação
+      if (!shouldAnimate) {
+        document.documentElement.classList.remove('js');
+        return;
+      }
+
+      gsap.registerPlugin(ScrollTrigger);
+      animateHero(countUp);
+      animateScrollProgress();
+      animateReveals();
+      animateTimeline();
+      animateReasons();
+      animateFinal();
+
+      // Recalcula posições depois que as fotos carregarem
+      window.addEventListener('load', () => ScrollTrigger.refresh());
+    }
+
+    init();
+  </script>
+</body>
+</html>
