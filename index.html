@@ -390,13 +390,14 @@
             <div class="relative md:order-2">
               <div class="chapter-deco absolute -inset-3 rotate-2 rounded-[2.4rem] border border-gold/40"></div>
               <div class="chapter-deco absolute inset-0 rounded-[2rem] shadow-[0_30px_60px_-25px_rgba(110,38,57,0.45)]"></div>
-              <figure class="chapter-photo relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+              <figure class="chapter-photo group relative aspect-[4/5] overflow-hidden rounded-[2rem]">
                 <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blush to-[#EBC6BE] text-rosewood">
                   <svg class="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
                   <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em]"></span>
                 </div>
-                <!-- ✏️ FOTO DO CAPÍTULO 6 (fica desfocada de propósito — o futuro ainda é mistério) -->
-                <img data-photo src="assets/velhinhos.jpeg" alt="Capítulo 6 — o que ainda vamos viver" loading="lazy" class="absolute left-0 top-[-10%] h-[120%] w-full object-cover blur-lg">
+                <!-- ✏️ FOTO DO CAPÍTULO 6 (fica desfocada de propósito — o futuro ainda é mistério;
+                     ao passar o mouse, a foto vai ficando nítida) -->
+                <img data-photo src="assets/velhinhos.jpeg" alt="Capítulo 6 — o que ainda vamos viver" loading="lazy" class="absolute left-0 top-[-10%] h-[120%] w-full object-cover blur-lg transition-[filter] duration-700 ease-out group-hover:blur-0">
                 <!-- Véu + "Continua…" por cima da foto desfocada -->
                 <div class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-wine-deep/60 via-wine-deep/10 to-transparent pb-10">
                   <span class="font-serif text-2xl italic text-cream/90">Continua…</span>
@@ -614,7 +615,7 @@
             <div class="flip-face flip-back absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-gold bg-gradient-to-br from-gold via-[#DDBF82] to-gold p-7 text-center text-wine-deep shadow-[0_20px_50px_-20px_rgba(201,164,92,0.75)]">
               <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-wine">Aperte o play</span>
               <p class="mt-4 font-serif text-2xl italic leading-snug">
-                Nossas memórias valem mais que mil palavras
+                Nossas memórias valem mais que mil palavras. EU TE AMO PRA SEMPRE MARINA.
               </p>
               <button type="button" data-video-open aria-label="Assistir ao nosso vídeo"
                       class="video-play relative mt-7 flex h-16 w-16 items-center justify-center rounded-full bg-wine-deep text-gold shadow-[0_12px_30px_-8px_rgba(74,23,38,0.7)] transition duration-300 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-wine-deep focus-visible:ring-offset-2 focus-visible:ring-offset-gold active:scale-95">
@@ -695,10 +696,10 @@
       </svg>
     </button>
 
-    <!-- Moldura vertical 9:16 que ocupa o máximo da tela sem cortar -->
-    <div id="video-frame" class="relative aspect-[9/16] h-[min(80svh,calc((100vw_-_2rem)_*_16_/_9))] overflow-hidden rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] ring-1 ring-gold/30">
+    <!-- Moldura que se ajusta ao formato do próprio vídeo, o maior possível sem cortar -->
+    <div id="video-frame" class="relative overflow-hidden rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] ring-1 ring-gold/30">
       <!-- ✏️ VÍDEO: coloque o arquivo em assets/nosso-video.mp4 (ou mude o src) -->
-      <video id="video-player" src="assets/video.mp4" class="h-full w-full rounded-2xl bg-black object-cover" controls playsinline preload="metadata"></video>
+      <video id="video-player" src="assets/video.mp4" class="block h-auto max-h-[90svh] w-auto max-w-[calc(100vw_-_2rem)] rounded-2xl bg-black object-contain" controls playsinline preload="metadata"></video>
     </div>
   </div>
 
