@@ -95,6 +95,16 @@
       .flip-card:hover .flip-inner { transform: rotateY(180deg); }
     }
 
+    /* Botão de play (card 07): só é clicável com o cartão virado,
+       para um toque na frente não abrir o vídeo sem querer */
+    .video-play { pointer-events: none; }
+    .flip-card.is-flipped .video-play { pointer-events: auto; }
+    @media (hover: hover) and (pointer: fine) {
+      .flip-card:hover .video-play { pointer-events: auto; }
+    }
+    /* Navegando pelo teclado (Tab), o cartão vira sozinho ao focar o play */
+    .flip-card:has(.video-play:focus-visible) .flip-inner { transform: rotateY(180deg); }
+
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .flip-inner { transition-duration: 0.01ms; }
@@ -371,6 +381,46 @@
             </div>
           </li>
 
+          <!-- ───────── CAPÍTULO 6 — O FUTURO ───────── -->
+          <li class="chapter relative grid gap-10 pl-10 md:grid-cols-2 md:items-center md:gap-20 md:pl-0" data-side="right">
+            <span class="absolute left-0 top-3 -translate-x-1/2 md:left-1/2 md:top-1/2 md:-translate-y-1/2">
+              <span class="chapter-dot block h-3 w-3 rounded-full bg-gold ring-4 ring-cream"></span>
+            </span>
+
+            <div class="relative md:order-2">
+              <div class="chapter-deco absolute -inset-3 rotate-2 rounded-[2.4rem] border border-gold/40"></div>
+              <div class="chapter-deco absolute inset-0 rounded-[2rem] shadow-[0_30px_60px_-25px_rgba(110,38,57,0.45)]"></div>
+              <figure class="chapter-photo relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blush to-[#EBC6BE] text-rosewood">
+                  <svg class="h-10 w-10 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+                  <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em]"></span>
+                </div>
+                <!-- ✏️ FOTO DO CAPÍTULO 6 (fica desfocada de propósito — o futuro ainda é mistério) -->
+                <img data-photo src="assets/velhinhos.jpeg" alt="Capítulo 6 — o que ainda vamos viver" loading="lazy" class="absolute left-0 top-[-10%] h-[120%] w-full object-cover blur-lg">
+                <!-- Véu + "Continua…" por cima da foto desfocada -->
+                <div class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-wine-deep/60 via-wine-deep/10 to-transparent pb-10">
+                  <span class="font-serif text-2xl italic text-cream/90">Continua…</span>
+                </div>
+              </figure>
+            </div>
+
+            <div class="chapter-text md:order-1 md:text-right">
+              <p class="font-sans text-xs uppercase tracking-[0.35em] text-gold">Capítulo VI</p>
+              <!-- ✏️ Data -->
+              <time class="mt-3 block font-serif text-lg italic text-rosewood">A partir de agora</time>
+              <!-- ✏️ Título -->
+              <h3 class="mt-2 font-serif text-3xl leading-tight text-wine sm:text-4xl">As páginas que ainda vamos escrever</h3>
+              <!-- ✏️ Texto -->
+              <p class="mt-5 font-lora text-base leading-relaxed text-ink/80 sm:text-lg">
+                Esse é o único capítulo que eu ainda não sei contar, e é justamente o que mais me deixa ansioso. Fico imaginando
+                as viagens que a gente ainda vai planejar juntos, os lugares que vamos conhecer de mãos dadas, as fotos que ainda nem
+                tiramos e as risadas que ainda nem demos. Penso na nossa casa, nos nossos sonhos saindo do papel um por um, e em cada
+                conquista que vamos comemorar como se fosse a primeira. Eu não sei exatamente como vai ser, meu amor, mas sei com quem
+                vai ser, e isso basta pra eu ter certeza de que a melhor parte da nossa história ainda está por vir.
+              </p>
+            </div>
+          </li>
+
         </ol>
       </div>
     </section>
@@ -540,6 +590,41 @@
           </div>
         </div>
 
+        <!-- ───────── CARD 7 (ESPECIAL — VÍDEO) ─────────
+             Fica centralizado sozinho na última linha.
+             O botão de play abre o modal #video-modal (fim do <body>). -->
+        <div class="reason-card flip-card h-72 cursor-pointer rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:col-span-2 sm:mx-auto sm:h-80 sm:w-[calc(50%_-_0.75rem)] lg:col-span-1 lg:col-start-2 lg:w-full" role="button" tabindex="0" aria-pressed="false">
+          <div class="flip-inner relative h-full w-full">
+            <div class="flip-face absolute inset-0 flex flex-col justify-between overflow-hidden rounded-3xl border border-gold/60 bg-gradient-to-br from-wine-deep via-wine-deep to-wine p-7 text-cream shadow-[0_20px_50px_-20px_rgba(201,164,92,0.55)]">
+              <!-- Brilho dourado + moldura interna -->
+              <div class="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-gold/20 blur-3xl"></div>
+              <div class="pointer-events-none absolute inset-2 rounded-[1.25rem] border border-gold/20"></div>
+
+              <div class="relative flex items-start justify-between">
+                <span class="font-serif text-5xl italic text-gold">07</span>
+                <span class="text-lg text-gold/70">✦</span>
+              </div>
+              <div class="relative">
+                <p class="font-sans text-[0.6rem] uppercase tracking-[0.35em] text-gold/70">Especial</p>
+                <!-- ✏️ Título (frente) -->
+                <h3 class="mt-2 font-serif text-2xl text-cream">Nosso filme</h3>
+                <p class="mt-2 font-sans text-[0.65rem] uppercase tracking-[0.3em] text-gold">Vire o cartão</p>
+              </div>
+            </div>
+            <div class="flip-face flip-back absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-gold bg-gradient-to-br from-gold via-[#DDBF82] to-gold p-7 text-center text-wine-deep shadow-[0_20px_50px_-20px_rgba(201,164,92,0.75)]">
+              <span class="font-sans text-[0.65rem] uppercase tracking-[0.3em] text-wine">Aperte o play</span>
+              <p class="mt-4 font-serif text-2xl italic leading-snug">
+                Nossas memórias valem mais que mil palavras
+              </p>
+              <button type="button" data-video-open aria-label="Assistir ao nosso vídeo"
+                      class="video-play relative mt-7 flex h-16 w-16 items-center justify-center rounded-full bg-wine-deep text-gold shadow-[0_12px_30px_-8px_rgba(74,23,38,0.7)] transition duration-300 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-wine-deep focus-visible:ring-offset-2 focus-visible:ring-offset-gold active:scale-95">
+                <span class="absolute inset-0 animate-pulse-ring rounded-full border border-wine-deep/50"></span>
+                <svg class="ml-1 h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -596,6 +681,26 @@
   <footer class="bg-wine-deep pb-10 text-center font-sans text-[0.65rem] uppercase tracking-[0.3em] text-cream/40">
     Feito com amor por João Victor Scaboli · 2026
   </footer>
+
+
+  <!-- =====================================================
+       MODAL DO VÍDEO (aberto pelo play do card 07)
+       Clique fora do vídeo, no X ou aperte Esc para fechar.
+       ===================================================== -->
+  <div id="video-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-wine-deep/80 p-4 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="Nosso vídeo" aria-hidden="true">
+    <button id="video-close" type="button" aria-label="Fechar vídeo"
+            class="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-gold/50 bg-wine-deep/60 text-gold backdrop-blur-sm transition duration-300 hover:rotate-90 hover:border-gold hover:bg-wine-deep focus:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:right-6 sm:top-6">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+
+    <!-- Moldura vertical 9:16 que ocupa o máximo da tela sem cortar -->
+    <div id="video-frame" class="relative aspect-[9/16] h-[min(80svh,calc((100vw_-_2rem)_*_16_/_9))] overflow-hidden rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] ring-1 ring-gold/30">
+      <!-- ✏️ VÍDEO: coloque o arquivo em assets/nosso-video.mp4 (ou mude o src) -->
+      <video id="video-player" src="assets/video.mp4" class="h-full w-full rounded-2xl bg-black object-cover" controls playsinline preload="metadata"></video>
+    </div>
+  </div>
 
 
   <!-- Bibliotecas -->
@@ -835,7 +940,72 @@
 
 
     /* ---------------------------------------------------------
-       8. FINAL — texto em sequência + surpresa com corações
+       8. VÍDEO (card 07) — modal com <video> nativo
+       - Play abre com fade-in e já começa a tocar
+       - X, clique fora ou Esc: pausa, volta ao início e fecha
+       --------------------------------------------------------- */
+    function initVideoModal() {
+      const modal = document.getElementById('video-modal');
+      const frame = document.getElementById('video-frame');
+      const video = document.getElementById('video-player');
+      const closeBtn = document.getElementById('video-close');
+      let lastFocus = null;
+
+      const isOpen = () => !modal.classList.contains('hidden');
+
+      const open = () => {
+        lastFocus = document.activeElement;
+        if (shouldAnimate) gsap.killTweensOf([modal, frame]);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus({ preventScroll: true });
+
+        if (shouldAnimate) {
+          gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' });
+          gsap.fromTo(frame,
+            { opacity: 0, y: 30, scale: 0.96 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' });
+        }
+
+        // Se o navegador bloquear o autoplay, os controles continuam disponíveis
+        video.play().catch(() => {});
+      };
+
+      const hide = () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lastFocus) lastFocus.focus({ preventScroll: true });
+      };
+
+      const close = () => {
+        if (!isOpen()) return;
+        video.pause();
+        video.currentTime = 0;
+        if (shouldAnimate) {
+          gsap.to(modal, { opacity: 0, duration: 0.35, ease: 'power2.in', onComplete: hide });
+        } else {
+          hide();
+        }
+      };
+
+      document.querySelectorAll('[data-video-open]').forEach((btn) => {
+        // stopPropagation: o clique/tecla no play não deve desvirar o cartão
+        btn.addEventListener('click', (e) => { e.stopPropagation(); open(); });
+        btn.addEventListener('keydown', (e) => e.stopPropagation());
+      });
+
+      closeBtn.addEventListener('click', close);
+      modal.addEventListener('click', (e) => { if (!frame.contains(e.target)) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) close(); });
+    }
+
+
+    /* ---------------------------------------------------------
+       9. FINAL — texto em sequência + surpresa com corações
        --------------------------------------------------------- */
     function animateFinal() {
       gsap.fromTo('#final [data-line]', { opacity: 0, y: 30 }, {
@@ -911,6 +1081,7 @@
     function init() {
       initPhotos();
       initFlipCards();
+      initVideoModal();
       initSurprise();
       const countUp = initCounter();
 
