@@ -685,6 +685,26 @@
 
 
   <!-- =====================================================
+       MÚSICA DE FUNDO + BOTÃO FLUTUANTE
+       Começa pausada (os navegadores bloqueiam autoplay com som).
+       Pausa sozinha enquanto o vídeo está aberto e volta ao fechar.
+       ===================================================== -->
+  <!-- ✏️ MÚSICA: coloque o arquivo em assets/musica-fundo.mp3 (ou mude o src) -->
+  <audio id="bg-music" src="assets/musica.mp3" loop preload="metadata"></audio>
+
+  <button id="music-btn" type="button" aria-label="Tocar música" aria-pressed="false"
+          class="fixed bottom-6 right-6 z-[60] flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-wine-deep/80 text-gold shadow-[0_12px_30px_-10px_rgba(74,23,38,0.8)] backdrop-blur-md transition duration-300 hover:scale-105 hover:border-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:scale-95 sm:h-14 sm:w-14">
+    <svg data-icon="play" class="ml-0.5 h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z"/>
+    </svg>
+    <svg data-icon="pause" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <rect x="6.5" y="5" width="3.5" height="14" rx="1.2"/>
+      <rect x="14" y="5" width="3.5" height="14" rx="1.2"/>
+    </svg>
+  </button>
+
+
+  <!-- =====================================================
        MODAL DO VÍDEO (aberto pelo play do card 07)
        Clique fora do vídeo, no X ou aperte Esc para fechar.
        ===================================================== -->
@@ -941,20 +961,60 @@
 
 
     /* ---------------------------------------------------------
-       8. VÍDEO (card 07) — modal com <video> nativo
+       8. MÚSICA DE FUNDO — botão flutuante de play/pause
+       Os ícones seguem os eventos do próprio <audio>, então ficam
+       certos mesmo quando a música é pausada pelo vídeo.
+       --------------------------------------------------------- */
+    function initMusic() {
+      const audio = document.getElementById('bg-music');
+      const btn = document.getElementById('music-btn');
+      const playIcon = btn.querySelector('[data-icon="play"]');
+      const pauseIcon = btn.querySelector('[data-icon="pause"]');
+
+      audio.volume = 0.3;
+
+      const isPlaying = () => !audio.paused;
+      // Se o arquivo não existir ou o navegador bloquear, o ícone continua em "Play"
+      const play = () => audio.play().catch(() => {});
+      const pause = () => audio.pause();
+
+      const syncIcon = () => {
+        const playing = isPlaying();
+        playIcon.classList.toggle('hidden', playing);
+        pauseIcon.classList.toggle('hidden', !playing);
+        btn.setAttribute('aria-pressed', String(playing));
+        btn.setAttribute('aria-label', playing ? 'Pausar música' : 'Tocar música');
+      };
+
+      audio.addEventListener('play', syncIcon);
+      audio.addEventListener('pause', syncIcon);
+      btn.addEventListener('click', () => (isPlaying() ? pause() : play()));
+
+      return { isPlaying, play, pause };
+    }
+
+
+    /* ---------------------------------------------------------
+       9. VÍDEO (card 07) — modal com <video> nativo
        - Play abre com fade-in e já começa a tocar
        - X, clique fora ou Esc: pausa, volta ao início e fecha
+       - Música de fundo pausa ao abrir e volta ao fechar
+         (só se estava tocando antes)
        --------------------------------------------------------- */
-    function initVideoModal() {
+    function initVideoModal(music) {
       const modal = document.getElementById('video-modal');
       const frame = document.getElementById('video-frame');
       const video = document.getElementById('video-player');
       const closeBtn = document.getElementById('video-close');
       let lastFocus = null;
+      let wasMusicPlaying = false;
 
       const isOpen = () => !modal.classList.contains('hidden');
 
       const open = () => {
+        wasMusicPlaying = music.isPlaying();
+        if (wasMusicPlaying) music.pause();
+
         lastFocus = document.activeElement;
         if (shouldAnimate) gsap.killTweensOf([modal, frame]);
         modal.classList.remove('hidden');
@@ -986,6 +1046,8 @@
         if (!isOpen()) return;
         video.pause();
         video.currentTime = 0;
+        if (wasMusicPlaying) music.play();
+        wasMusicPlaying = false;
         if (shouldAnimate) {
           gsap.to(modal, { opacity: 0, duration: 0.35, ease: 'power2.in', onComplete: hide });
         } else {
@@ -1006,7 +1068,7 @@
 
 
     /* ---------------------------------------------------------
-       9. FINAL — texto em sequência + surpresa com corações
+       10. FINAL — texto em sequência + surpresa com corações
        --------------------------------------------------------- */
     function animateFinal() {
       gsap.fromTo('#final [data-line]', { opacity: 0, y: 30 }, {
@@ -1082,7 +1144,7 @@
     function init() {
       initPhotos();
       initFlipCards();
-      initVideoModal();
+      initVideoModal(initMusic());
       initSurprise();
       const countUp = initCounter();
 
